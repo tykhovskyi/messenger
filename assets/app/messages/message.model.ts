@@ -1,7 +1,7 @@
 export class Message {
   constructor(
-    content: string,
-    username: string,
-    messageId?: string,
-    useerId?: string) {}
+    public content: string,
+    public username: string,
+    public messageId?: string,
+    public useerId?: string) {}
 }
