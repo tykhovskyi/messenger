@@ -32,10 +32,13 @@ export class MessageComponent {
   }
 
   updateMessage(message: Message) {
-    
+
   }
 
   onDelete() {
-    this.messageService.deleteMessage(this.msg);
+    this.messageService.deleteMessage(this.msg)
+      .subscribe(
+        result => console.log(result)
+      );
   }
 }

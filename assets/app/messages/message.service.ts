@@ -7,7 +7,7 @@ import { Message } from "./message.model";
 
 @Injectable()
 export class MessageService {
-  private messageUrl = 'http://localhost:3000/message';
+  private messageUrl = 'http://localhost:3000/message/';
   private messages: Message[] = [];
   messageIsEdit = new EventEmitter<Message>();
 
@@ -52,12 +52,15 @@ export class MessageService {
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
 
-    return this.http.patch(this.messageUrl + '/' + message.messageId, body, {headers: headers})
+    return this.http.patch(this.messageUrl + message.messageId, body, {headers: headers})
       .map((responce: Response) => responce.json())
       .catch((error: Response) => Observable.throw(error.json()));
   }
 
   deleteMessage(message: Message) {
     this.messages.splice(this.messages.indexOf(message), 1);
+    return this.http.delete(this.messageUrl + message.messageId)
+      .map((responce: Response) => responce.json())
+      .catch((error: Response) => Observable.throw(error.json()));
   }
 }
