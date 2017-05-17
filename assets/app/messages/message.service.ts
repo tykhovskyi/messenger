@@ -7,6 +7,7 @@ import { Message } from "./message.model";
 
 @Injectable()
 export class MessageService {
+  private messageUrl = 'http://localhost:3000/message';
   private messages: Message[] = [];
 
   constructor(private http: Http) {}
@@ -15,13 +16,25 @@ export class MessageService {
     this.messages.push(message);
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
-    return this.http.post('http://localhost:3000/message', body, {headers: headers})
+    return this.http.post(this.messageUrl, body, {headers: headers})
       .map((responce: Response) => responce.json())
       .catch((error: Response) => Observable.throw(error.json()));
   }
 
   getMessages() {
-    return this.messages;
+    return this.http.get(this.messageUrl)
+      .map((response: Response) => {
+        const messages = response.json().obj;
+        let transformedMessages: Message[] = [];
+
+        for (let msg of messages) {
+          transformedMessages.push(new Message(msg.content, 'Dummy', msg.id, null));
+        }
+        this.messages = transformedMessages;
+
+        return transformedMessages;
+      })
+      .catch((error: Response) => Observable.throw(error.json()));
   }
 
   deleteMessage(message: Message) {
