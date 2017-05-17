@@ -14,13 +14,17 @@ export class MessageService {
   constructor(private http: Http) {}
 
   addMessage(message: Message) {
-    this.messages.push(message);
-
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
 
     return this.http.post(this.messageUrl, body, {headers: headers})
-      .map((responce: Response) => responce.json())
+      .map((responce: Response) => {
+        const result = responce.json();
+        const msg = new Message(result.obj.content, 'Dummy', result.obj._id, null);
+        this.messages.push(msg);
+
+        return msg;
+      })
       .catch((error: Response) => Observable.throw(error.json()));
   }
 
@@ -31,7 +35,7 @@ export class MessageService {
         let transformedMessages: Message[] = [];
 
         for (let msg of messages) {
-          transformedMessages.push(new Message(msg.content, 'Dummy', msg.id, null));
+          transformedMessages.push(new Message(msg.content, 'Dummy', msg._id, null));
         }
         this.messages = transformedMessages;
 
@@ -42,6 +46,15 @@ export class MessageService {
 
   editMessage(message: Message) {
     this.messageIsEdit.emit(message);
+  }
+
+  updateMessage(message: Message) {
+    const body = JSON.stringify(message);
+    const headers = new Headers({'Content-Type': 'application/json'});
+
+    return this.http.patch(this.messageUrl + '/' + message.messageId, body, {headers: headers})
+      .map((responce: Response) => responce.json())
+      .catch((error: Response) => Observable.throw(error.json()));
   }
 
   deleteMessage(message: Message) {
