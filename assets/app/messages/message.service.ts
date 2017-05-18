@@ -17,7 +17,7 @@ export class MessageService {
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
 
-    return this.http.post(this.messageUrl, body, {headers: headers})
+    return this.http.post(this.messageUrl + this.getToken(), body, {headers: headers})
       .map((responce: Response) => {
         const result = responce.json();
         const msg = new Message(result.obj.content, 'Dummy', result.obj._id, null);
@@ -52,15 +52,20 @@ export class MessageService {
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
 
-    return this.http.patch(this.messageUrl + message.messageId, body, {headers: headers})
+    return this.http.patch(this.messageUrl + message.messageId + this.getToken(), body, {headers: headers})
       .map((responce: Response) => responce.json())
       .catch((error: Response) => Observable.throw(error.json()));
   }
 
   deleteMessage(message: Message) {
     this.messages.splice(this.messages.indexOf(message), 1);
-    return this.http.delete(this.messageUrl + message.messageId)
+    return this.http.delete(this.messageUrl + message.messageId + this.getToken())
       .map((responce: Response) => responce.json())
       .catch((error: Response) => Observable.throw(error.json()));
+  }
+
+  private getToken() {    
+    const item = localStorage.getItem('token');
+    return item ? '?token=' + item : '';
   }
 }
