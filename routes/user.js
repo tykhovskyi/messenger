@@ -5,7 +5,7 @@ var jwt = require('jsonwebtoken');
 
 var User = require('../models/user');
 
-router.post('/', function (req, res, next) {
+router.post('/', function(req, res, next) {
   var user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -28,7 +28,7 @@ router.post('/', function (req, res, next) {
   });
 });
 
-router.post('/signin', function(err, res, next) {
+router.post('/signin', function(req, res, next) {
   User.findOne({email: req.body.email}, function(err, user) {
     if (err) {
       return res.status(500).json({
