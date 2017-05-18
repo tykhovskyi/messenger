@@ -12,6 +12,7 @@ router.get('/', function(req, res, next) {
           error: err
         });
       }
+
       res.status(200).json({
         message: 'Success',
         obj: messages
@@ -30,6 +31,7 @@ router.post('/', function (req, res, next) {
         error: err
       });
     }
+
     res.status(201).json({
       message: 'Saved message',
       obj: result
@@ -45,6 +47,7 @@ router.patch('/:id', function(req, res, next) {
         error: err
       });
     }
+
     if (!message) {
       return res.status(500).json({
         title: 'No message found!',
@@ -60,6 +63,7 @@ router.patch('/:id', function(req, res, next) {
           error: err
         });
       }
+      
       res.status(200).json({
         message: 'Updated message',
         obj: result
@@ -76,6 +80,7 @@ router.delete('/:id', function(req, res, next) {
         error: err
       });
     }
+
     if (!message) {
       return res.status(500).json({
         title: 'No message found!',
@@ -90,6 +95,7 @@ router.delete('/:id', function(req, res, next) {
           error: err
         });
       }
+      
       res.status(200).json({
         message: 'Deleted message',
         obj: result
