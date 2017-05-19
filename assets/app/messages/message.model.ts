@@ -3,5 +3,5 @@ export class Message {
     public content: string,
     public username: string,
     public messageId?: string,
-    public useerId?: string) {}
+    public userId?: string) {}
 }

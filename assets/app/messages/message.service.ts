@@ -7,7 +7,7 @@ import { Message } from "./message.model";
 
 @Injectable()
 export class MessageService {
-  private messageUrl = 'http://localhost:3000/message/';
+  private messageUrl = 'http://localhost:3000/message';
   private messages: Message[] = [];
   messageIsEdit = new EventEmitter<Message>();
 
@@ -16,11 +16,13 @@ export class MessageService {
   addMessage(message: Message) {
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
+    const url = this.messageUrl + this.getToken();
 
-    return this.http.post(this.messageUrl + this.getToken(), body, {headers: headers})
+    return this.http.post(url, body, {headers: headers})
       .map((responce: Response) => {
         const result = responce.json();
-        const msg = new Message(result.obj.content, 'Dummy', result.obj._id, null);
+        const msg = new Message(
+          result.obj.content, result.obj.user.firstName, result.obj._id, result.obj.user._id);
         this.messages.push(msg);
 
         return msg;
@@ -35,7 +37,8 @@ export class MessageService {
         let transformedMessages: Message[] = [];
 
         for (let msg of messages) {
-          transformedMessages.push(new Message(msg.content, 'Dummy', msg._id, null));
+          transformedMessages.push(
+            new Message(msg.content, msg.user.firstName, msg._id, msg.user._id));
         }
         this.messages = transformedMessages;
 
@@ -51,15 +54,18 @@ export class MessageService {
   updateMessage(message: Message) {
     const body = JSON.stringify(message);
     const headers = new Headers({'Content-Type': 'application/json'});
+    const url = this.messageUrl +'/' + message.messageId + this.getToken();
 
-    return this.http.patch(this.messageUrl + message.messageId + this.getToken(), body, {headers: headers})
+    return this.http.patch(url, body, {headers: headers})
       .map((responce: Response) => responce.json())
       .catch((error: Response) => Observable.throw(error.json()));
   }
 
   deleteMessage(message: Message) {
     this.messages.splice(this.messages.indexOf(message), 1);
-    return this.http.delete(this.messageUrl + message.messageId + this.getToken())
+    const url = this.messageUrl +'/' + message.messageId + this.getToken();
+
+    return this.http.delete(url)
       .map((responce: Response) => responce.json())
       .catch((error: Response) => Observable.throw(error.json()));
   }
