@@ -62,7 +62,15 @@ router.post('/', function (req, res, next) {
 });
 
 router.patch('/:id', function(req, res, next) {
+  var decoded = jwt.decode(req.query.token);
   Message.findById(req.params.id, function (err, message) {
+    if (message.user != decoded.user._id) {
+      return res.status(401).json({
+        title: 'Not authenticated',
+        error: {message: 'Users do not match'}
+      });
+    }
+
     if (err) {
       return res.status(500).json({
         title: 'An error occurred',
@@ -95,7 +103,15 @@ router.patch('/:id', function(req, res, next) {
 });
 
 router.delete('/:id', function(req, res, next) {
+  var decoded = jwt.decode(req.query.token);
   Message.findById(req.params.id, function (err, message) {
+    if (message.user != decoded.user._id) {
+      return res.status(401).json({
+        title: 'Not authenticated',
+        error: {message: 'Users do not match'}
+      });
+    }
+
     if (err) {
       return res.status(500).json({
         title: 'An error occurred',
