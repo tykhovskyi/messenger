@@ -4,6 +4,7 @@ import 'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
 
 import { Message } from "./message.model";
+import { ErrorService } from "../errors/error.service";
 
 @Injectable()
 export class MessageService {
@@ -11,7 +12,7 @@ export class MessageService {
   private messages: Message[] = [];
   messageIsEdit = new EventEmitter<Message>();
 
-  constructor(private http: Http) {}
+  constructor(private http: Http, private errorService: ErrorService) {}
 
   addMessage(message: Message) {
     const body = JSON.stringify(message);
@@ -27,7 +28,10 @@ export class MessageService {
 
         return msg;
       })
-      .catch((error: Response) => Observable.throw(error.json()));
+      .catch((error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
+      });
   }
 
   getMessages() {
@@ -44,7 +48,10 @@ export class MessageService {
 
         return transformedMessages;
       })
-      .catch((error: Response) => Observable.throw(error.json()));
+      .catch((error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
+      });
   }
 
   editMessage(message: Message) {
@@ -58,7 +65,10 @@ export class MessageService {
 
     return this.http.patch(url, body, {headers: headers})
       .map((responce: Response) => responce.json())
-      .catch((error: Response) => Observable.throw(error.json()));
+      .catch((error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
+      });
   }
 
   deleteMessage(message: Message) {
@@ -67,7 +77,10 @@ export class MessageService {
 
     return this.http.delete(url)
       .map((responce: Response) => responce.json())
-      .catch((error: Response) => Observable.throw(error.json()));
+      .catch((error: Response) => {
+        this.errorService.handleError(error.json());
+        return Observable.throw(error.json());
+      });
   }
 
   private getToken() {    
