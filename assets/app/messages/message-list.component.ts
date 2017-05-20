@@ -7,9 +7,7 @@ import { MessageService } from "./message.service";
   selector: 'app-message-list',
   template: `
     <div class="col-md-8 col-md-offset-2">
-      <app-message 
-        [msg]="message" 
-        *ngFor="let message of messages"></app-message>
+      <app-message [msg]="message" *ngFor="let message of messages"></app-message>
     </div>
   `
 })

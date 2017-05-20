@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-messages',
-  templateUrl: `    
+  template: `   
     <div class="row">
       <app-message-input></app-message-input>
     </div>
