@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from "@angular/forms";
 
 import { MessageService } from "./message.service";
@@ -8,7 +8,7 @@ import { Message } from "./message.model";
   selector: 'app-message-input',
   templateUrl: './message-input.component.html'
 })
-export class MessageInputComponent implements OnInit {
+export class MessageInputComponent implements OnInit, OnDestroy {
   message: Message;
 
   constructor(private messageService: MessageService) { }
@@ -17,6 +17,10 @@ export class MessageInputComponent implements OnInit {
     this.messageService.messageIsEdit.subscribe(
       (message: Message) => this.message = message
     );
+  }
+
+  ngOnDestroy() {
+    this.messageService.messageIsEdit.unsubscribe();
   }
 
   onSubmit(form: NgForm) {
